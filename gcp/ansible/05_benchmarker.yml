@@ -1,0 +1,13 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - command: rm -rf /tmp/benchmarker
+      args:
+        removes: /tmp/benchmarker
+    - synchronize: src=../../benchmarker dest=/tmp/ recursive=yes delete=yes copy_links=yes
+      sudo: no
+    - command: chown -R isucon:isucon /tmp/benchmarker
+    - name: build benchmarker
+      command: su - isucon bash -c 'cd /tmp/benchmarker; /home/isucon/env.sh make release-nometadata'
+    - command: su - isucon bash -c 'mv /tmp/benchmarker/benchmarker /home/isucon/'
